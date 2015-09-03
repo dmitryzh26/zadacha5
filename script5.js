@@ -1,65 +1,79 @@
   window.onload = function(){ 
-  var flag = 1,
-      clock2 = document.getElementById("digital_watch"),  
-      clock1 = new Clock();  
+	var ClockMode = 1,
+		clockElement = document.getElementById("digital_watch"),  
+		clockObject = new Clock();
+      	  
   
   
   
-  function Clock() {
-         
-	this.init = function() 	
-	{var date = new Date(),
-		 year = date.getFullYear(),
-		 month = check_date(date.getMonth()+1),
-		 day = check_date(date.getDate()),
-	
-		hours = check_date(date.getHours()),
-		minutes = check_date(date.getMinutes()),
-		seconds = check_date(date.getSeconds());
-	
-    function check_date(n){return (n < 10) ? "0" + n : n}
+    function Clock() {
+    		
+		function check_date(n) {
+			return (n < 10) ? "0" + n : n;
+		};
     
-		clock2.addEventListener("click", function(){flag = 1; });
-		clock2.addEventListener("contextmenu", function(){flag = 2;  event.preventDefault();});  
+		function getYearMonthDay() {
+			date = new Date();    				
+				return [date.getFullYear(), check_date(date.getMonth()+1), check_date(date.getDate())];
+		};
+	
+		function getHourMinuteSec() {
+			date = new Date();
+					return [check_date(date.getHours()), check_date(date.getMinutes()), check_date(date.getSeconds())];
+		};	
+	
+		clockElement.addEventListener("click", function() {
+			ClockMode = 1; 
+		});
+	
+		clockElement.addEventListener("contextmenu", function() {
+			ClockMode = 2; event.preventDefault();
+		});  
   
+		function render() {
+			if(ClockMode === 1) { 
+				clockElement.innerHTML = getHourMinuteSec()[0] + ':' + getHourMinuteSec()[1] + ':' + getHourMinuteSec()[2];
+			};
+			
+			if(ClockMode === 2) { 
+				clockElement.innerHTML = getYearMonthDay()[0] + ':' + getYearMonthDay()[1] + ':' + getYearMonthDay()[2];
+			};
+	};
+    
+	this.init = function() {
+		render();
+	};
 	
-	if(flag == 1){clock2.innerHTML = hours + ":" + minutes + ":" + seconds;}
-	if(flag == 2){clock2.innerHTML = year + ":" + month + ":" + day;}
+	this.destroy = function(destroy_var) {
+		this.destroy_var = null; 
+	};
 	
-    }
-	
-	this.destroy = function(destroy_var)
-		{
-			this.destroy_var = null; 
-		}
-	
-   return this; 
+    clockElement.onmousedown = function(e) {
+		clockElement.style.position = 'absolute';
+		moveAt(e);
+		document.body.appendChild(clockElement);
+
+		clockElement.style.zIndex = 1000; 
+  
+	function moveAt(e) {
+		clockElement.style.left = e.pageX - clockElement.offsetWidth / 2 + 'px';
+		clockElement.style.top = e.pageY - clockElement.offsetHeight / 2 + 'px';
+    };
+
+	document.onmousemove = function(e) {
+		moveAt(e);
+	};
+
+	clockElement.onmouseup = function() {
+		document.onmousemove = null;
+		clockElement.onmouseup = null; 
+    };
+ };  
+
+  return this; 
   }
 
  
-setInterval(window.onload = function(){if(flag ==  0){clock1.init()} else {clock1.destroy(clock1); clock1.init();}}, 1000); 
-  
+setInterval(window.onload = function(){if(ClockMode ===  0){clockObject.init()} else {clockObject.destroy(); clockObject.init();}}, 1000); 
 
-clock2.onmousedown = function(e) {
-  clock2.style.position = 'absolute';
-  moveAt(e);
-  document.body.appendChild(clock2);
-
-  clock2.style.zIndex = 1000; 
-  
-  function moveAt(e) {
-    clock2.style.left = e.pageX - clock2.offsetWidth / 2 + 'px';
-    clock2.style.top = e.pageY - clock2.offsetHeight / 2 + 'px';
-  }
-
-  document.onmousemove = function(e) {
-    moveAt(e);
-  }
-
-  clock2.onmouseup = function() {
-    document.onmousemove = null;
-    clock2.onmouseup = null; 
-    }
- }
-
-}
+} 
