@@ -1,5 +1,5 @@
-  window.onload = function(){ 
-	var ClockMode = 1,
+   window.onload = function(){ 
+	var ClockMode = "hhmmssMode",
 		clockElement = document.getElementById("digital_watch"),  
 		clockObject = new Clock();
       	  
@@ -23,19 +23,19 @@
 		};	
 	
 		clockElement.addEventListener("click", function() {
-			ClockMode = 1; 
+			ClockMode = "hhmmssMode"; 
 		});
 	
 		clockElement.addEventListener("contextmenu", function() {
-			ClockMode = 2; event.preventDefault();
+			ClockMode = "yymmddMode"; event.preventDefault();
 		});  
   
 		function render() {
-			if(ClockMode === 1) { 
+			if(ClockMode === "hhmmssMode") { 
 				clockElement.innerHTML = getHourMinuteSec()[0] + ':' + getHourMinuteSec()[1] + ':' + getHourMinuteSec()[2];
 			};
 			
-			if(ClockMode === 2) { 
+			if(ClockMode === "yymmddMode") { 
 				clockElement.innerHTML = getYearMonthDay()[0] + ':' + getYearMonthDay()[1] + ':' + getYearMonthDay()[2];
 			};
 	};
